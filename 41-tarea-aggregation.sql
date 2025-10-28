@@ -11,6 +11,14 @@ group by
 having
 	substring(email, position('@' in email) +1) like 'google.com';
 
+-- Respuesta del profesor:
+select
+	count(*)
+from
+	public.users
+where
+	email like '%google.com';
+
 -- 2. De qué países son los usuarios con cuentas de @google.com
 -- Tip: distinct
 
@@ -26,6 +34,13 @@ group by
 having
 	substring(email, position('@' in email) +1) like 'google.com';
 
+-- Respuesta del profesor:
+select
+	distinct country
+from
+	public.users
+where
+	email like '%google.com';
 
 -- 3. Cuantos usuarios hay por país (country)
 -- Tip: Group by
@@ -39,9 +54,15 @@ group by
 	country
 order by
 	users desc;
-	
 
-select * from public.users where country like 'Belarus';
+-- Respuesta del profesor:
+select
+	count(first_name) as users,
+	country
+from
+	public.users
+group by
+	country;
 
 -- 4. Listado de direcciones IP de todos los usuarios de Iceland
 -- Campos requeridos first_name, last_name, country, last_connection
@@ -55,6 +76,15 @@ from
 	public.users
 where country like 'Iceland';
 
+-- Respuesta del profesor:
+select
+	first_name,
+	last_name,
+	country,
+	last_connection as direcciones_ip
+from
+	public.users
+where country like 'Iceland';
 
 -- 5. Cuantos de esos usuarios (query anterior) tiene dirección IP
 -- que incia en 112.XXX.XXX.XXX
@@ -73,6 +103,13 @@ group by
 	country,
 	last_connection
 having country like 'Iceland' and last_connection like '112.%';
+
+-- Respuesta del profesor:
+select
+	count(*)
+from
+	public.users
+where country = 'Iceland' and last_connection like '112.%';
 
 -- 6. Listado de usuarios de Iceland, tienen dirección IP
 -- que inicia en 112 ó 28 ó 188
@@ -147,6 +184,22 @@ El país es 'Iceland'. Y
 La IP comienza con '112.' O con '28.' O con '188.'.
 ¡Este es el query correcto! Es la manera de garantizar que la condición de país se aplique a todas las condiciones de la dirección IP. */
 
+-- Respuesta del profesor:
+select
+	first_name,
+	last_name,
+	country,
+	last_connection as direcciones_ip
+FROM
+    public.users
+where
+	country LIKE 'Iceland' 
+    AND (
+        last_connection LIKE '112.%'
+        OR last_connection LIKE '28.%'
+        OR last_connection LIKE '188.%'
+    );
+
 -- 7. Ordene el resultado anterior, por apellido (last_name) ascendente
 -- y luego el first_name ascendentemente también
 
@@ -155,7 +208,7 @@ SELECT
     first_name,
     last_name,
     country,
-    last_connection AS direcciones_ip
+    last_connection
 FROM
     public.users
 GROUP BY
@@ -165,6 +218,25 @@ GROUP BY
     last_connection
 HAVING 
     country LIKE 'Iceland' 
+    AND (
+        last_connection LIKE '112.%'
+        OR last_connection LIKE '28.%'
+        OR last_connection LIKE '188.%'
+    )
+order by 
+	last_name asc,
+	first_name asc;
+
+-- Respuesta del profecor:
+select
+	first_name,
+	last_name,
+	country,
+	last_connection
+FROM
+    public.users
+where
+	country LIKE 'Iceland' 
     AND (
         last_connection LIKE '112.%'
         OR last_connection LIKE '28.%'
@@ -193,6 +265,8 @@ order by
 	first_name asc,
 	last_name asc;
 
+-- la respuesta del profesor es la misma
+
 -- 9. Del query anterior, cuente cuántas personas hay por país
 -- Ordene los resultados por País asc
 
@@ -206,4 +280,17 @@ group by
 having 
 	country in ('Mexico', 'Honduras', 'Costa Rica')
 order by
-	user_count asc;
+	country asc;
+
+-- respuesta del profesor:
+select
+	count(*) as total,
+	country
+from 
+	users
+where 
+	country in ('Mexico', 'Honduras', 'Costa Rica')
+group by
+	country
+order by
+	country asc;
