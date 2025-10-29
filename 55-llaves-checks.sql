@@ -11,3 +11,8 @@ alter table public.countrylanguage add constraint "countrycode_language_pkey" pr
 -- 4. Crear check en percentage, 
 -- Para que no permita negativos ni números superiores a 100
 alter table public.countrylanguage add constraint check_percentage check (percentage between 0 and 100);
+
+-- Respuesta del profesor:
+alter table countrylanguage add check (
+    (percentage >= 0) and (percentage <=100)
+);
